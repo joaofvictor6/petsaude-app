@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetSaúde | Triagem HVR Recife</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <i class="fa-solid fa-paw"></i> PetSaúde REC
+            </div>
+            <div class="nav-links">
+                <a href="#funcionalidades" id="nav-feat">Cidadania Pet</a>
+                <a href="#planos" id="nav-plans">Atendimento</a>
+            </div>
+            <div class="nav-actions">
+                <div class="lang-switch">
+                    <button onclick="changeLang('pt')" class="active" id="btn-pt">PT</button>
+                    <button onclick="changeLang('en')" id="btn-en">EN</button>
+                </div>
+                <a href="login.html" class="btn-login" id="nav-login">Acesso Cidadão</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <span class="badge" id="hero-badge">Desafios Recife: Saúde Animal</span>
+            <h1 id="hero-title">Zero Filas no <span>HVR Recife.</span> Triagem Inteligente.</h1>
+            <p id="hero-desc">Desafogue o Hospital Veterinário do Recife. Faça a pré-triagem com nossa IA e, em caso de urgência, encontre a rota mais rápida para salvar seu pet.</p>
+            <div class="hero-buttons">
+                <button class="btn-primary btn-mascote" onclick="openChat()" id="btn-chat">
+                    <img src="assets/mascote.png" alt="Mascote Toby" class="mascote-icon" /> Triagem com Toby IA
+                </button>
+                <!-- Botão de Geolocalização -->
+                <button class="btn-secondary" onclick="getLocation()" id="btn-location">
+                    <i class="fa-solid fa-location-dot"></i> Rota de Emergência
+                </button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="assets/hero-img.jpg" alt="Cão e Gato saudáveis no Recife" />
+        </div>
+    </section>
+
+    <section class="features" id="funcionalidades">
+        <div class="section-header">
+            <h2 id="gamif-title">Cidadania Pet e Recompensas</h2>
+            <p id="gamif-subtitle">Ajude a cidade e ganhe benefícios na Rede Parceira</p>
+        </div>
+        <div class="cards-container">
+            <div class="feature-card">
+                <i class="fa-solid fa-droplet icon" style="color: #ef4444;"></i>
+                <h3 id="card1-title">Doador Herói</h3>
+                <p id="card1-desc">Doe sangue no HVR e acumule PetPoints para trocar por descontos em consultas particulares.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fa-solid fa-house-chimney-medical icon"></i>
+                <h3 id="card2-title">Fila Digital</h3>
+                <p id="card2-desc">Aguarde sua vez no conforto de casa. O Toby avisa quando você deve se deslocar ao hospital.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fa-solid fa-handshake-angle icon"></i>
+                <h3 id="card3-title">Rede Parceira</h3>
+                <p id="card3-desc">HVR lotado? Use seus pontos para ser atendido rapidamente em clínicas privadas conveniadas.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="pricing" id="planos">
+        <h2 id="planos-title">Opções de Atendimento</h2>
+        <div class="pricing-container">
+            <div class="price-card">
+                <h3 id="plan1-name">HVR (Público)</h3>
+                <div class="price">R$ 0<span>/gratuito</span></div>
+                <ul id="plan1-features">
+                    <li><i class="fa-solid fa-check"></i> Triagem via IA (Toby)</li>
+                    <li><i class="fa-solid fa-check"></i> Atendimento SUS Pet</li>
+                    <li><i class="fa-solid fa-check"></i> Sujeito à Fila do Dia</li>
+                </ul>
+                <button class="btn-outline" id="btn-plan1">Entrar na Fila SUS</button>
+            </div>
+            <div class="price-card highlight">
+                <div class="popular-badge" id="badge-popular">Sem Fila</div>
+                <h3 id="plan2-name">Rede Parceira (Privado)</h3>
+                <div class="price">Descontos<span> via App</span></div>
+                <ul id="plan2-features">
+                    <li><i class="fa-solid fa-check"></i> Encaminhamento Imediato</li>
+                    <li><i class="fa-solid fa-check"></i> Geolocalização de Clínicas</li>
+                    <li><i class="fa-solid fa-check"></i> Use PetPoints para Abater</li>
+                </ul>
+                <button class="btn-primary" id="btn-plan2">Ver Clínicas Vizinhas</button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p id="footer-text">© 2026 PetSaúde REC. Solução para o Banco de Oportunidades do Recife.</p>
+    </footer>
+
+    <!-- Chatbot Flutuante -->
+    <div id="chat-container" class="chat-hidden">
+        <div class="chat-header">
+            <div class="chat-title">
+                <img src="assets/mascote.png" alt="Mascote Toby" class="mascote-icon-chat" /> 
+                <span id="chat-title-text">Mascote Toby (Triagem)</span>
+            </div>
+            <button onclick="closeChat()" class="close-chat"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot-message" id="chat-welcome">Olá cidadão! Sou o Toby. Descreva os sintomas do seu pet para fazermos a pré-triagem do HVR Recife.</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Digite os sintomas..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()" id="btn-send"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

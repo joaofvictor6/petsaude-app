@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetSaúde | Painel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0056b3;
+            --primary-hover: #004494;
+            --accent: #ffc107;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --bg-light: #f0f4f8;
+            --white: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg-light); color: var(--text-dark); }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: var(--primary);
+            min-height: 100vh;
+            position: fixed;
+            top: 0; left: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 30px 0;
+            z-index: 200;
+        }
+        .sidebar-logo {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            padding: 0 24px 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+        .sidebar-logo span { font-size: 0.75rem; display: block; font-weight: 400; opacity: 0.75; margin-top: 4px; }
+        .sidebar-nav { padding: 20px 0; flex: 1; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 24px;
+            color: rgba(255,255,255,0.75);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+        .nav-item i { width: 20px; text-align: center; font-size: 1rem; }
+        .sidebar-footer {
+            padding: 20px 24px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+        }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .user-avatar {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 0.9rem;
+        }
+        .user-name { color: white; font-size: 0.85rem; font-weight: 600; }
+        .user-role { color: rgba(255,255,255,0.65); font-size: 0.75rem; }
+        .btn-logout {
+            margin-top: 12px;
+            display: flex; align-items: center; gap: 8px;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.82rem;
+            cursor: pointer;
+            border: none; background: none;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            transition: color 0.2s;
+        }
+        .btn-logout:hover { color: white; }
+
+        /* Conteúdo principal */
+        .main-content {
+            margin-left: 240px;
+            padding: 32px 36px;
+            min-height: 100vh;
+        }
+        .page-header {
+            margin-bottom: 28px;
+        }
+        .page-header h1 { font-size: 1.6rem; color: var(--text-dark); }
+        .page-header p { color: var(--text-light); font-size: 0.9rem; margin-top: 4px; }
+
+        /* Cards de métrica */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        .metric-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 24px 22px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+        .metric-icon {
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+        .metric-icon.blue   { background: #dbeafe; color: var(--primary); }
+        .metric-icon.green  { background: #d1fae5; color: #059669; }
+        .metric-icon.amber  { background: #fef3c7; color: #d97706; }
+        .metric-icon.red    { background: #fee2e2; color: #dc2626; }
+        .metric-label { font-size: 0.78rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        .metric-value { font-size: 1.8rem; font-weight: 700; color: var(--text-dark); line-height: 1.2; }
+        .metric-sub { font-size: 0.78rem; color: var(--text-light); margin-top: 2px; }
+
+        /* Tabela de triagem */
+        .section-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            margin-bottom: 24px;
+        }
+        .section-card h3 {
+            font-size: 1rem;
+            color: var(--text-dark);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th {
+            text-align: left;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--text-light);
+            font-weight: 600;
+            padding: 8px 14px;
+            border-bottom: 1px solid #eef2f6;
+        }
+        td {
+            padding: 13px 14px;
+            font-size: 0.88rem;
+            color: var(--text-dark);
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #f8fafc; }
+
+        /* Badges de risco */
+        .badge-risco {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .badge-verde   { background: #d1fae5; color: #065f46; }
+        .badge-amarelo { background: #fef3c7; color: #92400e; }
+        .badge-vermelho{ background: #fee2e2; color: #991b1b; }
+
+        /* Badge status fila */
+        .badge-status {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-aguardando { background: #e0f2fe; color: #075985; }
+        .badge-chamado    { background: #fef3c7; color: #92400e; }
+        .badge-atendido   { background: #d1fae5; color: #065f46; }
+
+        /* Barra de progresso PetPoints */
+        .points-bar-wrap { margin-top: 6px; }
+        .points-bar-bg {
+            background: #e2e8f0;
+            border-radius: 8px;
+            height: 8px;
+            overflow: hidden;
+        }
+        .points-bar-fill {
+            height: 100%;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #0056b3, #38bdf8);
+            transition: width 1s ease;
+        }
+        .points-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* Histórico de triagem (cidadão) */
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .history-item:last-child { border-bottom: none; }
+        .history-dot {
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .dot-verde   { background: #10b981; }
+        .dot-amarelo { background: #f59e0b; }
+        .dot-vermelho{ background: #ef4444; }
+        .history-text { flex: 1; font-size: 0.87rem; color: var(--text-dark); }
+        .history-date { font-size: 0.76rem; color: var(--text-light); white-space: nowrap; }
+
+        /* Painel cidadão - posição na fila */
+        .fila-display {
+            text-align: center;
+            padding: 20px;
+        }
+        .fila-numero {
+            font-size: 5rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+        }
+        .fila-label { font-size: 0.9rem; color: var(--text-light); margin-top: 8px; }
+        .fila-eta {
+            margin-top: 16px;
+            background: #e0f2fe;
+            color: #075985;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; min-height: auto; position: relative; flex-direction: row; flex-wrap: wrap; padding: 15px; }
+            .sidebar-logo { padding: 0 10px 10px; border-bottom: none; }
+            .sidebar-nav { display: flex; padding: 0; overflow-x: auto; }
+            .sidebar-footer { display: none; }
+            .main-content { margin-left: 0; padding: 20px 16px; }
+            .nav-item { padding: 10px 14px; font-size: 0.8rem; white-space: nowrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <i class="fa-solid fa-paw"></i> PetSaúde REC
+            <span id="sidebar-role-label">Painel Cidadão</span>
+        </div>
+        <nav class="sidebar-nav" id="sidebar-nav">
+            <!-- itens injetados pelo JS -->
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar" id="user-avatar">?</div>
+                <div>
+                    <div class="user-name" id="user-name">Carregando...</div>
+                    <div class="user-role" id="user-role-text"></div>
+                </div>
+            </div>
+            <button class="btn-logout" onclick="logout()">
+                <i class="fa-solid fa-right-from-bracket"></i> Sair
+            </button>
+        </div>
+    </aside>
+
+    <!-- Conteúdo -->
+    <main class="main-content" id="main-content">
+        <!-- Injetado pelo JS -->
+    </main>
+
+    <script>
+        // ==========================================
+        // CONFIGURAÇÃO DOS PERFIS
+        // ==========================================
+        const perfis = {
+            cidadao: {
+                label: 'Painel do Tutor',
+                roleText: 'Tutor de Pet',
+                avatarText: 'TU',
+                userName: 'Maria Silva',
+                nav: [
+                    { icon: 'fa-gauge', label: 'Início', id: 'inicio' },
+                    { icon: 'fa-list-ol', label: 'Minha Fila', id: 'fila' },
+                    { icon: 'fa-star', label: 'PetPoints', id: 'pontos' },
+                    { icon: 'fa-clock-rotate-left', label: 'Histórico', id: 'historico' },
+                ],
+                render: renderCidadao
+            },
+            clinica: {
+                label: 'Painel Clínica',
+                roleText: 'Clínica Parceira',
+                avatarText: 'CL',
+                userName: 'Clínica VetCare',
+                nav: [
+                    { icon: 'fa-gauge', label: 'Início', id: 'inicio' },
+                    { icon: 'fa-arrow-right-to-bracket', label: 'Encaminhamentos', id: 'encaminhamentos' },
+                    { icon: 'fa-calendar-check', label: 'Agenda', id: 'agenda' },
+                ],
+                render: renderClinica
+            },
+            adm: {
+                label: 'Painel ADM / HVR',
+                roleText: 'Administrador HVR',
+                avatarText: 'AD',
+                userName: 'Admin HVR',
+                nav: [
+                    { icon: 'fa-gauge', label: 'Visão Geral', id: 'inicio' },
+                    { icon: 'fa-list-check', label: 'Triagem Ativa', id: 'triagem' },
+                    { icon: 'fa-chart-bar', label: 'Relatórios', id: 'relatorios' },
+                    { icon: 'fa-handshake', label: 'Rede Parceira', id: 'rede' },
+                ],
+                render: renderAdm
+            }
+        };
+
+        // Lê perfil da URL (?perfil=cidadao)
+        const params = new URLSearchParams(window.location.search);
+        const perfil = params.get('perfil') || 'cidadao';
+        const cfg = perfis[perfil] || perfis.cidadao;
+
+        // Preenche sidebar
+        document.getElementById('sidebar-role-label').textContent = cfg.label;
+        document.getElementById('user-avatar').textContent = cfg.avatarText;
+        document.getElementById('user-name').textContent = cfg.userName;
+        document.getElementById('user-role-text').textContent = cfg.roleText;
+
+        const navEl = document.getElementById('sidebar-nav');
+        cfg.nav.forEach((item, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'nav-item' + (i === 0 ? ' active' : '');
+            btn.innerHTML = `<i class="fa-solid ${item.icon}"></i> ${item.label}`;
+            navEl.appendChild(btn);
+        });
+
+        // Renderiza conteúdo do perfil
+        cfg.render();
+
+        // ==========================================
+        // RENDERIZAÇÃO — CIDADÃO
+        // ==========================================
+        function renderCidadao() {
+            document.getElementById('main-content').innerHTML = `
+                <div class="page-header">
+                    <h1>Olá, Maria! 🐾</h1>
+                    <p>Acompanhe seu pet Bolinha na fila do HVR Recife.</p>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon blue"><i class="fa-solid fa-list-ol"></i></div>
+                        <div>
+                            <div class="metric-label">Posição na Fila</div>
+                            <div class="metric-value">14º</div>
+                            <div class="metric-sub">~42 min de espera</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon amber"><i class="fa-solid fa-star"></i></div>
+                        <div>
+                            <div class="metric-label">PetPoints</div>
+                            <div class="metric-value">340</div>
+                            <div class="metric-sub">Nível: Protetor</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon green"><i class="fa-solid fa-heart-pulse"></i></div>
+                        <div>
+                            <div class="metric-label">Status Triagem</div>
+                            <div class="metric-value" style="font-size:1.1rem; margin-top:6px;">
+                                <span class="badge-risco badge-amarelo">🟡 Moderado</span>
+                            </div>
+                            <div class="metric-sub">Toby — hoje, 09:17</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                    <div class="section-card">
+                        <h3><i class="fa-solid fa-list-ol" style="color:var(--primary)"></i> Posição na Fila HVR</h3>
+                        <div class="fila-display">
+                            <div class="fila-numero">14</div>
+                            <div class="fila-label">pets à sua frente</div>
+                            <div class="fila-eta"><i class="fa-regular fa-clock"></i> Estimativa: ~42 minutos</div>
+                            <p style="margin-top:14px; font-size:0.82rem; color:#64748b;">O Toby vai te avisar quando chegar a sua vez 🐾</p>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3><i class="fa-solid fa-star" style="color:#d97706"></i> Seus PetPoints</h3>
+                        <div style="padding: 10px 0;">
+                            <div style="font-size:2.2rem; font-weight:700; color:var(--primary);">340 pts</div>
+                            <div style="font-size:0.8rem; color:#64748b; margin-bottom:14px;">Próximo nível: Herói (500 pts)</div>
+                            <div class="points-bar-wrap">
+                                <div class="points-bar-bg">
+                                    <div class="points-bar-fill" style="width:68%"></div>
+                                </div>
+                                <div class="points-label"><span>Protetor</span><span>68% → Herói</span></div>
+                            </div>
+                            <div style="margin-top:16px; font-size:0.82rem; color:#64748b;">
+                                <b>Como ganhar mais:</b><br>
+                                🩸 Doe sangue no HVR → +100 pts<br>
+                                📋 Complete triagem → +10 pts
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <h3><i class="fa-solid fa-clock-rotate-left" style="color:var(--primary)"></i> Histórico de Triagens</h3>
+                    <div class="history-item">
+                        <div class="history-dot dot-amarelo"></div>
+                        <div class="history-text"><b>Bolinha</b> — Vômito repetido e apatia. Classificação: <span class="badge-risco badge-amarelo">🟡 Moderado</span></div>
+                        <div class="history-date">Hoje, 09:17</div>
+                    </div>
+                    <div class="history-item">
+                        <div class="history-dot dot-verde"></div>
+                        <div class="history-text"><b>Bolinha</b> — Check-up de rotina e vacina em dia. Classificação: <span class="badge-risco badge-verde">🟢 Leve</span></div>
+                        <div class="history-date">12/05/2026</div>
+                    </div>
+                    <div class="history-item">
+                        <div class="history-dot dot-vermelho"></div>
+                        <div class="history-text"><b>Bolinha</b> — Atropelamento leve. Classificação: <span class="badge-risco badge-vermelho">🔴 Emergência</span></div>
+                        <div class="history-date">03/02/2026</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // RENDERIZAÇÃO — CLÍNICA PARCEIRA
+        // ==========================================
+        function renderClinica() {
+            document.getElementById('main-content').innerHTML = `
+                <div class="page-header">
+                    <h1>Painel VetCare 🏥</h1>
+                    <p>Encaminhamentos da Rede Parceira — hoje, ${new Date().toLocaleDateString('pt-BR')}.</p>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon blue"><i class="fa-solid fa-arrow-right-to-bracket"></i></div>
+                        <div><div class="metric-label">Encaminhamentos Hoje</div><div class="metric-value">8</div></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon amber"><i class="fa-solid fa-hourglass-half"></i></div>
+                        <div><div class="metric-label">Aguardando</div><div class="metric-value">3</div></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon green"><i class="fa-solid fa-circle-check"></i></div>
+                        <div><div class="metric-label">Atendidos</div><div class="metric-value">5</div></div>
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <h3><i class="fa-solid fa-arrow-right-to-bracket" style="color:var(--primary)"></i> Encaminhamentos Ativos</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Pet</th><th>Tutor</th><th>Sintoma</th><th>Risco</th><th>Status</th><th>Horário</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>Rex</b> (Cão)</td><td>João Souza</td>
+                                <td>Vômito frequente</td>
+                                <td><span class="badge-risco badge-amarelo">🟡 Mod.</span></td>
+                                <td><span class="badge-status badge-aguardando">Aguardando</span></td>
+                                <td>09:45</td>
+                            </tr>
+                            <tr>
+                                <td><b>Mel</b> (Gata)</td><td>Ana Lima</td>
+                                <td>Coceira intensa</td>
+                                <td><span class="badge-risco badge-verde">🟢 Leve</span></td>
+                                <td><span class="badge-status badge-aguardando">Aguardando</span></td>
+                                <td>10:10</td>
+                            </tr>
+                            <tr>
+                                <td><b>Thor</b> (Cão)</td><td>Carlos Mendes</td>
+                                <td>Dificuldade respirar</td>
+                                <td><span class="badge-risco badge-vermelho">🔴 Emerg.</span></td>
+                                <td><span class="badge-status badge-chamado">A caminho</span></td>
+                                <td>10:32</td>
+                            </tr>
+                            <tr>
+                                <td><b>Luna</b> (Gata)</td><td>Fernanda Castro</td>
+                                <td>Check-up anual</td>
+                                <td><span class="badge-risco badge-verde">🟢 Leve</span></td>
+                                <td><span class="badge-status badge-atendido">Atendido</span></td>
+                                <td>08:00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // RENDERIZAÇÃO — ADM / HVR
+        // ==========================================
+        function renderAdm() {
+            document.getElementById('main-content').innerHTML = `
+                <div class="page-header">
+                    <h1>Visão Geral — HVR Recife 🛡️</h1>
+                    <p>Triagem ativa e encaminhamentos da Rede Parceira em tempo real.</p>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon blue"><i class="fa-solid fa-users"></i></div>
+                        <div><div class="metric-label">Na Fila Agora</div><div class="metric-value">47</div><div class="metric-sub">+12 vs ontem</div></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <div><div class="metric-label">Emergências</div><div class="metric-value">5</div><div class="metric-sub">Prioridade máxima</div></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon amber"><i class="fa-solid fa-rotate"></i></div>
+                        <div><div class="metric-label">Redirecionados</div><div class="metric-value">18</div><div class="metric-sub">Para Rede Parceira</div></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon green"><i class="fa-solid fa-circle-check"></i></div>
+                        <div><div class="metric-label">Atendidos Hoje</div><div class="metric-value">63</div><div class="metric-sub">↑ 8% vs média</div></div>
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <h3><i class="fa-solid fa-list-check" style="color:var(--primary)"></i> Triagem Ativa — Fila HVR</h3>
+                    <table>
+                        <thead>
+                            <tr><th>#</th><th>Pet</th><th>Tutor</th><th>Sintoma Principal</th><th>Risco Toby</th><th>Encaminhado?</th><th>Hora Triagem</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>1</b></td><td>Spike (Cão)</td><td>Roberto Alves</td>
+                                <td>Convulsão</td>
+                                <td><span class="badge-risco badge-vermelho">🔴 Emergência</span></td>
+                                <td>—</td><td>10:58</td>
+                            </tr>
+                            <tr>
+                                <td><b>2</b></td><td>Mimi (Gata)</td><td>Lúcia Ramos</td>
+                                <td>Envenenamento suspeito</td>
+                                <td><span class="badge-risco badge-vermelho">🔴 Emergência</span></td>
+                                <td>—</td><td>10:51</td>
+                            </tr>
+                            <tr>
+                                <td><b>3</b></td><td>Bolinha (Cão)</td><td>Maria Silva</td>
+                                <td>Vômito e apatia</td>
+                                <td><span class="badge-risco badge-amarelo">🟡 Moderado</span></td>
+                                <td><span class="badge-status badge-aguardando">Na fila</span></td><td>09:17</td>
+                            </tr>
+                            <tr>
+                                <td><b>4</b></td><td>Rex (Cão)</td><td>João Souza</td>
+                                <td>Vômito frequente</td>
+                                <td><span class="badge-risco badge-amarelo">🟡 Moderado</span></td>
+                                <td><span class="badge-status badge-chamado">VetCare</span></td><td>09:45</td>
+                            </tr>
+                            <tr>
+                                <td><b>5</b></td><td>Mel (Gata)</td><td>Ana Lima</td>
+                                <td>Coceira intensa</td>
+                                <td><span class="badge-risco badge-verde">🟢 Leve</span></td>
+                                <td><span class="badge-status badge-chamado">VetCare</span></td><td>10:10</td>
+                            </tr>
+                            <tr>
+                                <td><b>6</b></td><td>Pitoco (Cão)</td><td>Pedro Nunes</td>
+                                <td>Check-up / vacina</td>
+                                <td><span class="badge-risco badge-verde">🟢 Leve</span></td>
+                                <td><span class="badge-status badge-atendido">PetHosp</span></td><td>08:30</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section-card">
+                    <h3><i class="fa-solid fa-handshake" style="color:var(--primary)"></i> Rede Parceira — Capacidade Atual</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Clínica</th><th>Bairro</th><th>Vagas Disponíveis</th><th>Pets a Caminho</th><th>Status</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><b>VetCare Boa Viagem</b></td><td>Boa Viagem</td><td>4</td><td>2</td><td><span class="badge-status badge-atendido">Disponível</span></td></tr>
+                            <tr><td><b>PetHosp Madalena</b></td><td>Madalena</td><td>1</td><td>1</td><td><span class="badge-status badge-chamado">Quase lotada</span></td></tr>
+                            <tr><td><b>ClínicaPet Casa Forte</b></td><td>Casa Forte</td><td>6</td><td>0</td><td><span class="badge-status badge-atendido">Disponível</span></td></tr>
+                            <tr><td><b>VetPlus Afogados</b></td><td>Afogados</td><td>0</td><td>3</td><td><span class="badge-status badge-aguardando">Lotada</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function logout() {
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
