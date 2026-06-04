@@ -3,307 +3,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PetSaúde | Acesso Cidadão</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>PetSaúde | Acesso</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --primary: #0056b3;
-            --primary-hover: #004494;
-            --accent: #ffc107;
-            --text-dark: #1e293b;
-            --text-light: #64748b;
-            --bg-light: #f0f4f8;
-            --white: #ffffff;
+            --primary-light: #e8f0fc;
+            --accent: #f97316;
+            --green: #10b981;
+            --red: #ef4444;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --surface: #ffffff;
+            --bg: #f0f5ff;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-
-        body {
-            background: linear-gradient(135deg, #e0f2fe 0%, #f0f4f8 50%, #e8f5e9 100%);
-            min-height: 100vh;
+        /* LADO ESQUERDO — ilustração */
+        .left-panel {
+            background: linear-gradient(160deg, #003d8f 0%, #0056b3 50%, #1a7fe8 100%);
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            padding: 20px;
-        }
-
-        /* Cabeçalho simples */
-        .top-bar {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            background: var(--white);
-            padding: 15px 5%;
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-            z-index: 100;
+            padding: 60px 50px;
+            position: relative;
+            overflow: hidden;
         }
-        .logo { font-size: 1.4rem; font-weight: 700; color: var(--primary); }
-        .back-link { color: var(--text-light); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            width: 400px; height: 400px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 50%;
+            top: -100px; left: -100px;
+        }
+        .left-panel::after {
+            content: '';
+            position: absolute;
+            width: 300px; height: 300px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 50%;
+            bottom: -80px; right: -80px;
+        }
+        .brand-logo {
+            font-family: 'Space Mono', monospace;
+            color: white;
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 60px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1;
+        }
+        .brand-logo i { font-size: 1.6rem; }
+        .hero-text { z-index: 1; text-align: center; }
+        .hero-text h1 {
+            color: white;
+            font-size: 2.4rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 16px;
+        }
+        .hero-text h1 span { color: #93c5fd; }
+        .hero-text p { color: rgba(255,255,255,0.7); font-size: 1rem; line-height: 1.7; max-width: 340px; }
+        .stats-strip {
+            display: flex;
+            gap: 24px;
+            margin-top: 50px;
+            z-index: 1;
+        }
+        .stat-box {
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 14px;
+            padding: 16px 20px;
+            text-align: center;
+            backdrop-filter: blur(8px);
+        }
+        .stat-box .n  { color: white; font-size: 1.6rem; font-weight: 700; font-family: 'Space Mono', monospace; }
+        .stat-box .lb { color: rgba(255,255,255,0.65); font-size: 0.72rem; margin-top: 4px; }
+
+        /* LADO DIREITO — formulário */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 50px;
+            background: var(--surface);
+        }
+        .form-wrap { width: 100%; max-width: 400px; }
+
+        .back-link {
+            display: inline-flex; align-items: center; gap: 6px;
+            color: var(--muted); font-size: 0.82rem; text-decoration: none;
+            margin-bottom: 40px; transition: color 0.2s;
+        }
         .back-link:hover { color: var(--primary); }
 
-        /* Wrapper principal */
-        .login-wrapper {
-            width: 100%;
-            max-width: 440px;
-            margin-top: 60px;
-        }
+        .form-title { font-size: 1.7rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+        .form-sub   { color: var(--muted); font-size: 0.9rem; margin-bottom: 32px; }
 
-        /* Seletor de perfil */
-        .profile-selector {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 24px;
+        /* Tabs de perfil */
+        .profile-tabs {
+            display: flex; gap: 8px; margin-bottom: 28px;
+            background: var(--bg); border-radius: 12px; padding: 4px;
         }
-        .profile-btn {
-            flex: 1;
-            padding: 12px 10px;
-            border: 2px solid #dde3ea;
-            border-radius: 12px;
-            background: var(--white);
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-light);
-            transition: all 0.25s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
+        .tab-btn {
+            flex: 1; padding: 10px 8px; border: none;
+            background: transparent; border-radius: 9px;
+            font-family: 'Sora', sans-serif; font-size: 0.78rem; font-weight: 600;
+            color: var(--muted); cursor: pointer; transition: all 0.2s;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
         }
-        .profile-btn i { font-size: 1.5rem; }
-        .profile-btn:hover { border-color: var(--primary); color: var(--primary); background: #eef5ff; }
-        .profile-btn.active {
-            border-color: var(--primary);
-            background: var(--primary);
-            color: var(--white);
-            box-shadow: 0 4px 14px rgba(0,86,179,0.3);
-        }
+        .tab-btn i { font-size: 1.1rem; }
+        .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
 
-        /* Caixa de login */
-        .login-box {
-            background: var(--white);
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
-            padding: 40px 36px;
+        /* Hint de credenciais */
+        .hint-box {
+            background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px;
+            padding: 12px 14px; font-size: 0.79rem; color: #78350f;
+            margin-bottom: 22px; line-height: 1.6;
         }
-        .login-box h2 {
-            color: var(--text-dark);
-            font-size: 1.5rem;
-            margin-bottom: 6px;
-        }
-        .login-box .subtitle {
-            color: var(--text-light);
-            font-size: 0.9rem;
-            margin-bottom: 28px;
-        }
+        .hint-box code { background: #fef3c7; padding: 1px 5px; border-radius: 4px; font-family: 'Space Mono', monospace; }
 
         /* Campos */
-        .field-group { margin-bottom: 18px; }
-        .field-group label {
-            display: block;
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: var(--text-dark);
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .field { margin-bottom: 16px; }
+        .field label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--text); margin-bottom: 7px; letter-spacing: 0.3px; text-transform: uppercase; }
+        .field-inner { position: relative; }
+        .field-inner i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.9rem; }
+        .field input {
+            width: 100%; padding: 13px 14px 13px 40px;
+            border: 1.5px solid var(--border); border-radius: 10px;
+            font-family: 'Sora', sans-serif; font-size: 0.93rem; color: var(--text);
+            outline: none; transition: border-color 0.2s, box-shadow 0.2s;
         }
-        .field-group input {
-            width: 100%;
-            padding: 13px 16px;
-            border: 1.5px solid #dde3ea;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-family: 'Poppins', sans-serif;
-            color: var(--text-dark);
-            transition: border-color 0.2s, box-shadow 0.2s;
-            outline: none;
-        }
-        .field-group input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0,86,179,0.1);
+        .field input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,86,179,0.1); }
+
+        .error-box {
+            background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;
+            border-radius: 8px; padding: 10px 14px; font-size: 0.83rem;
+            margin-bottom: 16px; display: none; align-items: center; gap: 8px;
         }
 
-        /* Dica de credenciais demo */
-        .demo-hint {
-            background: #fffbeb;
-            border: 1px solid #fde68a;
-            border-radius: 10px;
-            padding: 10px 14px;
-            font-size: 0.8rem;
-            color: #92400e;
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-        .demo-hint b { color: #78350f; }
-
-        /* Botão entrar */
         .btn-entrar {
-            width: 100%;
-            padding: 14px;
-            background: var(--primary);
-            color: var(--white);
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 700;
-            font-family: 'Poppins', sans-serif;
-            cursor: pointer;
-            transition: all 0.25s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            width: 100%; padding: 14px; background: var(--primary);
+            color: white; border: none; border-radius: 12px;
+            font-family: 'Sora', sans-serif; font-size: 1rem; font-weight: 700;
+            cursor: pointer; transition: all 0.25s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-        .btn-entrar:hover {
-            background: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,86,179,0.3);
-        }
-        .btn-entrar:active { transform: translateY(0); }
+        .btn-entrar:hover { background: #004494; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,86,179,0.25); }
 
-        /* Mensagem de erro */
-        .error-msg {
-            background: #fef2f2;
-            color: #b91c1c;
-            border: 1px solid #fecaca;
-            border-radius: 8px;
-            padding: 10px 14px;
-            font-size: 0.85rem;
-            margin-bottom: 16px;
-            display: none;
-        }
-
-        /* Rodapé do card */
-        .card-footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 0.82rem;
-            color: var(--text-light);
-        }
-        .card-footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
-
-        @media (max-width: 480px) {
-            .login-box { padding: 30px 22px; }
+        @media (max-width: 768px) {
+            body { grid-template-columns: 1fr; }
+            .left-panel { display: none; }
+            .right-panel { padding: 40px 24px; }
         }
     </style>
 </head>
 <body>
-
-    <div class="top-bar">
-        <div class="logo"><i class="fa-solid fa-paw"></i> PetSaúde REC</div>
-        <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Voltar para Home</a>
+    <div class="left-panel">
+        <div class="brand-logo"><i class="fa-solid fa-paw"></i> PetSaúde REC</div>
+        <div class="hero-text">
+            <h1>Cuidado animal <span>inteligente</span> para Recife</h1>
+            <p>Triagem por IA, fila digital e Rede Parceira para desafogar o HVR e salvar mais vidas.</p>
+        </div>
+        <div class="stats-strip">
+            <div class="stat-box"><div class="n">2.4k</div><div class="lb">Pets triados</div></div>
+            <div class="stat-box"><div class="n">63%</div><div class="lb">Fila reduzida</div></div>
+            <div class="stat-box"><div class="n">5</div><div class="lb">Clínicas parceiras</div></div>
+        </div>
     </div>
 
-    <div class="login-wrapper">
+    <div class="right-panel">
+        <div class="form-wrap">
+            <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Voltar para Home</a>
+            <h2 class="form-title" id="form-title">Bem-vindo de volta!</h2>
+            <p class="form-sub" id="form-sub">Escolha seu perfil de acesso</p>
 
-        <!-- Seletor de perfil -->
-        <div class="profile-selector">
-            <button class="profile-btn active" id="btn-cidadao" onclick="selectProfile('cidadao')">
-                <i class="fa-solid fa-user"></i>
-                Sou Tutor
-            </button>
-            <button class="profile-btn" id="btn-clinica" onclick="selectProfile('clinica')">
-                <i class="fa-solid fa-house-chimney-medical"></i>
-                Clínica Parceira
-            </button>
-            <button class="profile-btn" id="btn-adm" onclick="selectProfile('adm')">
-                <i class="fa-solid fa-shield-halved"></i>
-                ADM / HVR
-            </button>
-        </div>
-
-        <!-- Caixa de login -->
-        <div class="login-box">
-            <h2 id="login-title">Olá, Tutor! 🐾</h2>
-            <p class="subtitle" id="login-subtitle">Acompanhe a fila e os PetPoints do seu pet.</p>
-
-            <!-- Dica de demo -->
-            <div class="demo-hint">
-                <b>🔑 Credenciais de demonstração:</b><br>
-                Tutor: <b>tutor@pet.com</b> / <b>123</b><br>
-                Clínica: <b>clinica@pet.com</b> / <b>123</b><br>
-                ADM: <b>adm@pet.com</b> / <b>123</b>
+            <div class="profile-tabs">
+                <button class="tab-btn active" id="tab-cidadao" onclick="selectTab('cidadao')">
+                    <i class="fa-solid fa-user"></i> Tutor
+                </button>
+                <button class="tab-btn" id="tab-clinica" onclick="selectTab('clinica')">
+                    <i class="fa-solid fa-house-chimney-medical"></i> Clínica
+                </button>
+                <button class="tab-btn" id="tab-adm" onclick="selectTab('adm')">
+                    <i class="fa-solid fa-shield-halved"></i> ADM/HVR
+                </button>
             </div>
 
-            <div class="error-msg" id="error-msg">
-                <i class="fa-solid fa-circle-exclamation"></i> E-mail ou senha incorretos. Tente novamente.
+            <div class="hint-box" id="hint-box">
+                <b>Credenciais demo:</b><br>
+                E-mail: <code id="hint-email">tutor@pet.com</code> &nbsp;|&nbsp; Senha: <code>123</code>
             </div>
 
-            <div class="field-group">
+            <div class="error-box" id="error-box">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span>E-mail ou senha incorretos.</span>
+            </div>
+
+            <div class="field">
                 <label>E-mail</label>
-                <input type="email" id="email" placeholder="seu@email.com">
+                <div class="field-inner">
+                    <i class="fa-regular fa-envelope"></i>
+                    <input type="email" id="email" placeholder="seu@email.com">
+                </div>
             </div>
-            <div class="field-group">
+            <div class="field">
                 <label>Senha</label>
-                <input type="password" id="password" placeholder="••••••••" onkeypress="if(event.key==='Enter') doLogin()">
+                <div class="field-inner">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="password" placeholder="••••••" onkeypress="if(event.key==='Enter') doLogin()">
+                </div>
             </div>
 
             <button class="btn-entrar" onclick="doLogin()">
                 <i class="fa-solid fa-right-to-bracket"></i> Entrar
             </button>
-
-            <div class="card-footer">
-                Não tem conta? <a href="#">Solicite acesso</a>
-            </div>
         </div>
     </div>
 
+    <script src="db.js"></script>
     <script>
-        let selectedProfile = 'cidadao';
-
-        const profiles = {
-            cidadao: {
-                title: 'Olá, Tutor! 🐾',
-                subtitle: 'Acompanhe a fila e os PetPoints do seu pet.',
-                email: 'tutor@pet.com',
-                redirect: 'dashboard.html?perfil=cidadao'
-            },
-            clinica: {
-                title: 'Área da Clínica 🏥',
-                subtitle: 'Gerencie encaminhamentos da Rede Parceira.',
-                email: 'clinica@pet.com',
-                redirect: 'dashboard.html?perfil=clinica'
-            },
-            adm: {
-                title: 'Painel ADM / HVR 🛡️',
-                subtitle: 'Visão completa da triagem e filas do hospital.',
-                email: 'adm@pet.com',
-                redirect: 'dashboard.html?perfil=adm'
-            }
+        const tabConfig = {
+            cidadao: { title: 'Olá, Tutor!',          sub: 'Acompanhe seu pet e a fila do HVR.',    email: 'tutor@pet.com' },
+            clinica: { title: 'Área da Clínica',       sub: 'Gerencie encaminhamentos recebidos.',   email: 'clinica@pet.com' },
+            adm:     { title: 'Painel ADM / HVR',      sub: 'Visão completa de triagem e filas.',    email: 'adm@pet.com' },
         };
+        let currentTab = 'cidadao';
 
-        function selectProfile(profile) {
-            selectedProfile = profile;
-            ['cidadao', 'clinica', 'adm'].forEach(p => {
-                document.getElementById(`btn-${p}`).classList.remove('active');
-            });
-            document.getElementById(`btn-${profile}`).classList.add('active');
-
-            const p = profiles[profile];
-            document.getElementById('login-title').textContent = p.title;
-            document.getElementById('login-subtitle').textContent = p.subtitle;
+        function selectTab(tab) {
+            currentTab = tab;
+            ['cidadao','clinica','adm'].forEach(t => document.getElementById('tab-'+t).classList.remove('active'));
+            document.getElementById('tab-'+tab).classList.add('active');
+            const cfg = tabConfig[tab];
+            document.getElementById('form-title').textContent = cfg.title;
+            document.getElementById('form-sub').textContent = cfg.sub;
+            document.getElementById('hint-email').textContent = cfg.email;
             document.getElementById('email').value = '';
             document.getElementById('password').value = '';
-            document.getElementById('error-msg').style.display = 'none';
+            document.getElementById('error-box').style.display = 'none';
         }
 
         function doLogin() {
             const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const expected = profiles[selectedProfile].email;
-            const errEl = document.getElementById('error-msg');
+            const senha = document.getElementById('password').value.trim();
+            const errEl = document.getElementById('error-box');
 
-            if (email === expected && password === '123') {
+            const user = PetDB.login(email, senha);
+            if (user) {
                 errEl.style.display = 'none';
-                window.location.href = profiles[selectedProfile].redirect;
+                window.location.href = 'dashboard.html';
             } else {
-                errEl.style.display = 'block';
+                errEl.style.display = 'flex';
             }
         }
     </script>

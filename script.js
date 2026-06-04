@@ -112,7 +112,7 @@ function showError(error) {
 // =========================================
 
 // Cole aqui sua chave do OpenRouter (openrouter.ai → Keys → Create Key, sem cartão)
-const OPENROUTER_API_KEY = '???';
+//apiaqui
 
 // IDs verificados em 28/05/2026 na página openrouter.ai/collections/free-models
 // O sistema tenta cada um em ordem — se receber 429 ou 404, passa pro próximo.
